@@ -1,0 +1,15 @@
+version: "3"
+services:
+  boebot:
+    image: "turtleog/boebot:latest"
+    restart: always
+    environment:
+      - PRODUCTION=BOOLEAN
+      - TOKEN=BOT_TOKEN
+      - OWNER_ID=OWNERS_DISCORD_ID
+      - NYT_API_KEY=NEW_YORK_TIMES_API_KEY
+      - PORT=PORT_NUMBER
+      - DASH_OAUTH_SECRET=DISCORD_OAUTH_CLIENT_SECRET
+      - DASH_CALLBACK_URL=DASHBOARD_CALLBACK_URL
+    ports:
+      - "EXTERNAL:INTERNAL"
