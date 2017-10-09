@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: lib/structures/NYTimes.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: lib/structures/NYTimes.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/* eslint-disable class-methods-use-this */
+
+const snekfetch = require("snekfetch");
+
+const validSections = [
+  "home", "opinion", "world", "national", "politics", "upshot", "nyregion", "business", "technology", "science",
+  "health", "sports", "arts", "books", "movies", "theater", "sundayreview", "fashion", "tmagazine", "food",
+  "travel", "magazine", "realestate", "automobiles", "obituaries", "insider", "all",
+];
+
+
+class NYTimes {
+  /**
+   * A wrapper for the NYTimes API
+   * @param {string} API_KEY The NYTimes API key.
+   */
+  constructor(API_KEY) {
+    this.API_KEY = API_KEY;
+    this.baseURL = "https://api.nytimes.com/svc";
+    this.validSections = validSections;
+  }
+
+  /**
+   * Uses snekfetch to make the request.
+   * @param {string} url The partial URL for the request.
+   * @param {string[]} params The parameters for the request.
+   * @return {Promise&lt;APIData>} The requested JSON object.
+   */
+  async request(url, params = []) {
+    params = this.validateParam(params);
+    const res = await snekfetch.get(`${url}.json?api-key=${this.API_KEY}&amp;${params.join("&amp;")}`);
+    return res.body;
+  }
+
+  /**
+   * Gets Top Stories from NYTimes.
+   * @param {string} section The section of NYTimes.
+   * @return {Promise&lt;APIData>} The requested JSON object.
+   */
+  async getTopStories(section = "home") {
+    if (!validSections.includes(section)) throw "Invalid section found.";
+    const newURL = `${this.baseURL}/topstories/v2/${section}`;
+    const res = await this.request(newURL).catch((err) => { throw err.body ? err.body.message : err; });
+    return res;
+  }
+
+  /**
+   * Gets articles from NYTimes Newswire
+   * @param {string} source The source, either NYT International, NYT, or all.
+   * @param {string} section The section of NYTimes.
+   * @param {number} limit The limit of the results, from 1 - 20.
+   * @return {Promise&lt;APIData>} The requested JSON object.
+   */
+  async getNewswire(source = "all", section = "all", limit = 10) {
+    if (!validSections.includes(section)) throw "Invalid section found.";
+    const newURL = `${this.baseURL}/news/v3/content/${source}/${section}`;
+    const res = await this.request(newURL, [`limit=${limit}`]).catch((err) => { throw err.body ? err.body.message : err; });
+    return res;
+  }
+
+  /**
+   * Gets movie reviews from NYTimes
+   * @param {string} query The search query
+   * @return {Promise&lt;APIData>}
+   */
+  async getMovieReview(query) {
+    const newURL = `${this.baseURL}/movies/v2/reviews/search`;
+    const res = await this.request(newURL, [`query=${query}`]).catch((err) => { throw err.body ? err.body.message : err; });
+    return res;
+  }
+
+  /**
+   * Validates request parameters
+   * @param {string[]} params The parameters for the request.
+   * @return {string} The validated parameters
+   */
+  validateParam(params) {
+    const param = {
+      validated: [],
+      current: "",
+      equals: 0,
+      end: 0,
+    };
+
+    params = params.join("&amp;").split("");
+    params.forEach((e, i) => {
+      if (!param.equals &amp;&amp; i === params.length - 1) throw "There must be a '=' sign in parameters.";
+      if (!param.equals &amp;&amp; e === " ") throw "There cannot be spaces in parmeters.";
+      if (e === " ") {
+        param.current += "%20";
+        return;
+      }
+      if (e === "=") param.equals++;
+      if (e === "&amp;") param.end++;
+      if (param.end) {
+        param.validated.push(param.current);
+        param.current = "";
+        param.end--;
+        param.equals--;
+      }
+      param.current += e;
+    });
+    if (param.current &amp;&amp; !param.end) param.validated.push(param.current);
+    return param.validated;
+  }
+}
+
+module.exports = NYTimes;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-SQLiteProvider.html">SQLiteProvider</a></li></ul><h3>Externals</h3><ul><li><a href="external-Discord.html">Discord</a></li><li><a href="external-Express.html">Express</a></li><li><a href="external-KomadaClient.html">KomadaClient</a></li></ul><h3>Classes</h3><ul><li><a href="BoeBot.html">BoeBot</a></li><li><a href="Dashboard.html">Dashboard</a></li><li><a href="DashboardGuild.html">DashboardGuild</a></li><li><a href="DashboardUser.html">DashboardUser</a></li><li><a href="Modlog.html">Modlog</a></li><li><a href="NYTimes.html">NYTimes</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.4</a> on Wed Sep 27 2017 21:38:00 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

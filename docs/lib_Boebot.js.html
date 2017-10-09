@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: lib/Boebot.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: lib/Boebot.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const { Client } = require("komada");
+const { join, sep } = require("path");
+const { NYT } = require("../../settings");
+const NYTimes = require("./structures/NYTimes");
+
+/**
+ * @typedef  {object}   OptionsDisabled
+ * @property {string[]} [commands=Array]    Disabled Commands
+ * @property {string[]} [events=Array]      Disabled Events
+ * @property {string[]} [functions=Array]   Disabled Functions
+ * @property {string[]} [inhibitors=Array]  Disabled Inhibitors
+ * @property {string[]} [finalizers=Array]  Disabled Finalizers
+ * @property {string[]} [monitors=Array]    Disabled Monitors
+ * @property {string[]} [providers=Array]   Disabled Providers
+ * @property {string[]} [extendables=Array] Disabled Extendables
+ * @memberof external:KomadaClient
+ */
+
+/**
+ * @typedef {Object} OptionsProviders
+ * @property {string} [engine=json] The Provider Engine SettingGateway will use to store and access to the persistent data.
+ * @property {string} [cache=js]    The Provider Cache Engine CacheManager from SettingGateway will use to cache the data.
+ * @memberof external:KomadaClient
+ */
+
+/**
+ * @typedef {Object} KomadaOptions
+ * @property {string}  [prefix=?] The prefix for Komada. Defaults to '?'.
+ * @property {string}  [ownerID=String] The bot owner's ID, Komada will autofetch it if it's not specified.
+ * @property {external:KomadaClient.OptionsDisabled}  [disabled={}] The disabled pieces.
+ * @property {PermissionLevels|Array&lt;{}>} [permStructure=Array&lt;{}>] The PermStructure for Komada.
+ * @property {boolean} [selfbot=boolean] Whether the bot is a selfbot or not. Komada detects this automatically.
+ * @property {string}  [readyMessage=String] A custom string message Komada will use when firing the ready event message.
+ * @property {number}  [commandMessageLifetime=1800] The lifetime for the command messages, in milliseconds.
+ * @property {number}  [commandMessageSweep=900] How frequent should Komada sweep the command messages.
+ * @property {boolean} [disableLogTimestamps=false] Whether the komada logger should show the timestamps.
+ * @property {boolean} [disableLogColor=false] Whether the komada logger should show colours.
+ * @property {boolean} [cmdEditing=false] Whether Komada should consider edited messages as potential messages able to fire new commands.
+ * @property {boolean} [cmdPrompt=false] Whether Komada should prompt missing/invalid arguments at failed command execution.
+ * @property {external:KomadaClient.OptionsProviders}  [provider={}] The engines for SettingGateway, 'engine' for Persistent Data, 'cache' for Cache Engine (defaults to Collection)
+ * @memberof external:KomadaClient
+ */
+
+/**
+  * @typedef {Object} Options
+  * @property {external:KomadaClient.KomadaOptions} options Komadas options
+  * @memberof BoeBot
+  */
+
+/**
+  * The great class for BoeBot
+  * @extends external:KomadaClient
+  */
+class BoeBot extends Client {
+  /**
+   * Creates a new instance of BoeBot
+   * @param {BoeBot.Options} options The config options to provide Komada
+   */
+  constructor(options) {
+    super(options);
+    /**
+     * The NYTimes API wrapper
+     * @type {Class}
+     */
+    this.NYTimes = new NYTimes(NYT.key);
+
+    /**
+     * The location of all dashboard related files
+     * @type {string}
+     */
+    this.dashboardDir = join(this.clientBaseDir, `../public${sep}`);
+  }
+}
+
+module.exports = BoeBot;
+
+/**
+ * @external KomadaClient
+ * @see {@link https://komada.js.org/}
+ */
+
+/**
+  * @external Discord
+  * @see {@link https://discord.js.org/#/docs/main/master/general/welcome}
+  */
+
+/**
+  * @typedef {Object} MessageEmbed
+  * @memberof external:Discord
+  * @see {@link https://discord.js.org/#/docs/main/master/class/MessageEmbed}
+  */
+
+/**
+ * @typedef {Class} Collection
+ * @memberof external:Discord
+ * @extends {Map}
+ * @see {@link https://discord.js.org/#/docs/main/master/class/Collection}
+ */
+
+/**
+ * @typedef {Object} User
+ * @memberof external:Discord
+ * @see {@link https://discord.js.org/#/docs/main/master/class/User}
+ */
+
+/**
+ * @typedef {Object} Guild
+ * @memberof external:Discord
+ * @see {@link https://discord.js.org/#/docs/main/master/class/Guild}
+ */
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-SQLiteProvider.html">SQLiteProvider</a></li></ul><h3>Externals</h3><ul><li><a href="external-Discord.html">Discord</a></li><li><a href="external-Express.html">Express</a></li><li><a href="external-KomadaClient.html">KomadaClient</a></li></ul><h3>Classes</h3><ul><li><a href="BoeBot.html">BoeBot</a></li><li><a href="Dashboard.html">Dashboard</a></li><li><a href="DashboardGuild.html">DashboardGuild</a></li><li><a href="DashboardUser.html">DashboardUser</a></li><li><a href="Modlog.html">Modlog</a></li><li><a href="NYTimes.html">NYTimes</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.4</a> on Wed Sep 27 2017 21:38:00 GMT-0400 (Eastern Daylight Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
