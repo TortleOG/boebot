@@ -4,7 +4,7 @@ LABEL matainer="Turtle <mahood.adam@gmail.com>"
 
 # Add package and package-lock
 WORKDIR /usr/src/boebot
-COPY package.json package-lock.json .\
+COPY package.json package-lock.json ./
 
 # Install dependencies
 RUN apk add --update \
