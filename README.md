@@ -5,5 +5,9 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/2e2512ccc76c45f0983ea475f29799ec)](https://www.codacy.com/app/TortleOG/boebot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=TortleOG/boebot&amp;utm_campaign=Badge_Grade)
 
 ## What is it?
-BoeBot is a Discord bot built with Komada and Discord.js.
+BoeBot is a Discord bot built with [Komada](https://komada.js.org/) and [Discord.js](https://discord.js.org/#/docs/main/stable/general/welcome).
 ___
+## Installation:
+
+## Proposed Features:
+
