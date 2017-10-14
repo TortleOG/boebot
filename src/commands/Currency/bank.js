@@ -22,10 +22,7 @@ exports.run = async (client, msg, [action, user, amount = 0]) => {
 exports.init = async (client) => {
   if (!client.providers.has("sqlite")) throw new Error("The Provider 'sqlite' does not seem to exist.");
   this.provider = client.providers.get("sqlite");
-  if (!(await this.provider.hasTable("currency"))) {
-    const SQLCreate = ["id TEXT NOT NULL UNIQUE", "amount INTEGER NOT NULL DEFAULT 0"];
-    await client.Currency.createTable("currency", SQLCreate);
-  }
+  if (!(await this.provider.hasTable("currency"))) await client.Currency.createTable("currency");
 };
 
 exports.conf = {

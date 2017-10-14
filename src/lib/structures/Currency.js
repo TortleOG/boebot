@@ -3,10 +3,12 @@ class Currency {
     Object.defineProperty(this, "client", { value: client });
 
     this.table = "currency";
+
+    this.sql = ["id TEXT NOT NULL UNIQUE", "amount INTEGER NOT NULL DEFAULT 0"];
   }
 
-  async createTable(name, sql) {
-    await this.provider.createTable(name, sql);
+  async createTable(name) {
+    await this.provider.createTable(name, this.sql);
   }
 
   async changeBalance(user, amount) {
