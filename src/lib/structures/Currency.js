@@ -3,18 +3,16 @@ class Currency {
     Object.defineProperty(this, "client", { value: client });
 
     this.table = "currency";
+  }
 
-    if (!client.providers.has("sqlite")) throw new Error(`The Provider ${this.providerEngine} does not seem to exist.`);
-    if (!(this.provider.hasTable(this.table).then())) {
-      const SQLCreate = ["id TEXT NOT NULL UNIQUE", "amount INTEGER NOT NULL DEFAULT 0"];
-      this.provider.createTable(this.table, SQLCreate).then().catch(err => console.error(err));
-    }
+  async createTable(name, sql) {
+    await this.provider.createTable(name, sql);
   }
 
   async changeBalance(user, amount) {
     if (typeof amount !== "number") throw "Expected parameter 'amount' to be type 'number'.";
     let row = await this.provider.get(this.table, user.id);
-    if (!row) row = await this.create(user.id);
+    if (!row) row = await this.create(user);
     await this.provider.update(this.table, user.id, { amount: row.amount + amount });
   }
 
@@ -36,10 +34,18 @@ class Currency {
     return this.changeBalance(user, -amount);
   }
 
-  async reset(user) {
+  async set(user, amount) {
+    const row = await this.provider.get(this.table, user.id);
+    if (!row) {
+      await this.create(user);
+      await this.changeBalance(user, amount);
+    } else await this.provider.update(this.table, user.id, { amount });
+  }
+
+  async reset(user, amount = 0) {
     const row = await this.provider.get(this.table, user.id);
     if (!row) await this.create(user.id);
-    else await this.provider.update(this.table, user.id, { amount: 0 });
+    else await this.provider.update(this.table, user.id, { amount });
   }
 
   get provider() {
