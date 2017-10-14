@@ -1,6 +1,6 @@
 {
-  "name": "disco",
-  "version": "4.1.1",
+  "name": "boebot",
+  "version": "4.2.0",
   "description": "A Discord bot built with Komada",
   "main": "app.js",
   "scripts": {
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TortleOG/Discobot.git"
+    "url": "git+https://github.com/TortleOG/Boebot.git"
   },
   "author": "Adam Mahood",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/TortleOG/Discobot/issues"
+    "url": "https://github.com/TortleOG/Boebot/issues"
   },
-  "homepage": "https://github.com/TortleOG/Discobot#readme",
+  "homepage": "https://github.com/TortleOG/Boebot#readme",
   "dependencies": {
     "body-parser": "^1.18.2",
     "discord.js": "github:hydrabolt/discord.js",
