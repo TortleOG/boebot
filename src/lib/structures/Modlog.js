@@ -119,8 +119,8 @@ class Modlog {
   }
 
   /**
-   * Creates the embed
-   * @type {external:Discord.MessageEmbed} The MessageEmbed
+   * The MessageEmbed.
+   * @type {external:Discord.MessageEmbed}
    */
   get embed() {
     const embed = new this.client.methods.Embed()
