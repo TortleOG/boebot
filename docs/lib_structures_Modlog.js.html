@@ -32,65 +32,86 @@
 class Modlog {
   /**
    * @param {Boebot} client The client the bot was created with.
-   * @param {string} type The type of moderation action.
    */
-  constructor(client, type) {
+  constructor(client) {
     /**
      * BoeBot Client
      * @type {BoeBot}
      */
     Object.defineProperty(this, "client", { value: client });
+  }
 
-    /**
-     * The Embed type
-     * @type {string}
-     */
+  /**
+   * Sets the type of the embed.
+   * @param {string} type The type of the embed.
+   * @return {class} This class.
+   */
+  setType(type) {
+    if (!type) throw `Expected input 'type' but found ${type}.`;
     this.type = type;
-
-    if (!this.title) throw `Unknown action (${this.type}) found.`;
+    if (!this.title) throw `${type} is not a valid embed type.`;
+    return this;
   }
 
   /**
    * Sets the offending member for the embed.
-   * @param {Object} member The offending member.
-   * @return {Function|*} createEmbed function if all properties are set, or this.
+   * @param {external:Discord.User | external:Discord.GuildMember} member The offending member.
+   * @return {class} This class.
    */
   setMember(member) {
-    if (!member) throw "Expected input 'member' but none was found.";
+    if (!member) throw `Expected input 'member' but found ${member}.`;
     this.member = {
       name: this.type === "unban" ? member.tag : member.user.tag,
       id: member.id,
     };
-    if (this.member &amp;&amp; this.moderator &amp;&amp; this.reason) return this.createEmbed();
     return this;
   }
 
   /**
    * Sets the moderator for the embed.
-   * @param {Object} mod The moderator that created the action.
-   * @return {Function|*} createEmbed function if all properties are set, or this.
+   * @param {external:Discord.GuildMember} mod The moderator that created the action.
+   * @return {class} This class.
    */
   setMod(mod) {
-    if (!mod) throw "Expected input 'mod' but none was found.";
+    if (!mod) throw `Expected input 'mod' but found ${mod}.`;
     this.moderator = {
       name: mod.user.tag,
       id: mod.id,
     };
-    if (this.member &amp;&amp; this.moderator &amp;&amp; this.reason) return this.createEmbed();
     return this;
   }
 
   /**
    * Sets the reason in the embed.
    * @param {string} reason The reason for the action.
-   * @return {Function|*} createEmbed function if all properties are set, or this.
+   * @return {class} This class.
    */
   setReason(reason) {
-    if (!reason) throw "Expected input 'reason' but none was found.";
-    if (typeof reason !== "string") throw "Expected input 'reason' to be a string.";
+    if (!reason) throw `Expected input 'reason' but found ${reason}.`;
     this.reason = reason;
-    if (this.member &amp;&amp; this.moderator &amp;&amp; this.reason) return this.createEmbed();
     return this;
+  }
+
+  /**
+   * Sends the embed to the modlog channel.
+   * @param {external:Discord.Message} msg A Discord message.
+   * @return {void} Sends the message.
+   */
+  send(msg) {
+    if (!this.type) throw "The embed type has not been set.";
+    else if (!this.member) throw "The embed member has not been set.";
+    else if (!this.mod) throw "The embed mod has not been set.";
+    else if (!this.reason) throw "The embed reason has not been set.";
+
+    let modLog;
+    if (!msg.guild) {
+      modLog = msg.channels.get(msg.guild.settings.modLog);
+    } else {
+      modLog = msg.guild.channels.get(msg.guild.settings.modLog);
+    }
+    if (!modLog) throw "Did not find a mod-log channel.";
+
+    return modLog.send({ embed: this.embed });
   }
 
   /**
@@ -126,10 +147,10 @@ class Modlog {
   }
 
   /**
-   * Creates the embed
-   * @return {external:Discord.MessageEmbed} The MessageEmbed
+   * The MessageEmbed.
+   * @type {external:Discord.MessageEmbed}
    */
-  createEmbed() {
+  get embed() {
     const embed = new this.client.methods.Embed()
       .setTitle(`User ${this.title}`)
       .setColor(this.color)
@@ -156,13 +177,13 @@ module.exports = Modlog;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-SQLiteProvider.html">SQLiteProvider</a></li></ul><h3>Externals</h3><ul><li><a href="external-Discord.html">Discord</a></li><li><a href="external-Express.html">Express</a></li><li><a href="external-KomadaClient.html">KomadaClient</a></li></ul><h3>Classes</h3><ul><li><a href="BoeBot.html">BoeBot</a></li><li><a href="Dashboard.html">Dashboard</a></li><li><a href="DashboardGuild.html">DashboardGuild</a></li><li><a href="DashboardUser.html">DashboardUser</a></li><li><a href="Modlog.html">Modlog</a></li><li><a href="NYTimes.html">NYTimes</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-SQLiteProvider.html">SQLiteProvider</a></li></ul><h3>Externals</h3><ul><li><a href="external-Discord.html">Discord</a></li><li><a href="external-Express.html">Express</a></li><li><a href="external-KomadaClient.html">KomadaClient</a></li></ul><h3>Classes</h3><ul><li><a href="BoeBot.html">BoeBot</a></li><li><a href="Currency.html">Currency</a></li><li><a href="Dashboard.html">Dashboard</a></li><li><a href="DashboardGuild.html">DashboardGuild</a></li><li><a href="DashboardUser.html">DashboardUser</a></li><li><a href="Modlog.html">Modlog</a></li><li><a href="NYTimes.html">NYTimes</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.4</a> on Wed Sep 27 2017 21:38:00 GMT-0400 (Eastern Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.4</a> on Sat Oct 14 2017 16:48:04 GMT-0400 (Eastern Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
