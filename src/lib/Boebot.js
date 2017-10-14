@@ -1,6 +1,8 @@
 const { Client } = require("komada");
 const { join, sep } = require("path");
 const settings = !process.env.PRODUCTION ? require("../../settings") : null;
+
+const Currency = require("./structures/Currency");
 const NYTimes = require("./structures/NYTimes");
 
 /**
@@ -63,6 +65,8 @@ class BoeBot extends Client {
      * @type {Class}
      */
     this.NYTimes = new NYTimes(settings ? settings.NYT.key : process.env.NYT_API_KEY);
+
+    this.Currency = new Currency(this);
 
     /**
      * The location of all dashboard related files
