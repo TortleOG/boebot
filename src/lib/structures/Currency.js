@@ -35,6 +35,7 @@ class Currency {
   }
 
   async set(user, amount) {
+    if (typeof amount !== "number") throw "Expected parameter 'amount' to be type 'number'.";
     const row = await this.provider.get(this.table, user.id);
     if (!row) {
       await this.create(user);
@@ -43,6 +44,7 @@ class Currency {
   }
 
   async reset(user, amount = 0) {
+    if (typeof amount !== "number") throw "Expected parameter 'amount' to be type 'number'.";
     const row = await this.provider.get(this.table, user.id);
     if (!row) await this.create(user.id);
     else await this.provider.update(this.table, user.id, { amount });
