@@ -128,7 +128,7 @@ class Modlog {
       .setColor(this.color)
       .setDescription([
         `**Member**: ${this.member.name} | ${this.member.id}`,
-        `**Moderator**: ${this.moderator.name}`,
+        `**Moderator**: ${this.mod.name}`,
         `**Reason**: ${this.reason}`,
       ].join("\n"))
       .setTimestamp()
