@@ -46,7 +46,7 @@ class Modlog {
    */
   setMod(mod) {
     if (!mod) throw `Expected input 'mod' but found ${mod}.`;
-    this.moderator = {
+    this.mod = {
       name: mod.user.tag,
       id: mod.id,
     };
