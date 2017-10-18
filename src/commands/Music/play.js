@@ -1,5 +1,4 @@
 const yt = require("ytdl-core");
-const wait = require("util").promisify(setTimeout);
 
 exports.run = async (client, msg) => {
   if (client.queue.has(msg.guild.id) === false) throw `Add some songs to the queue first with ${msg.guild.settings.prefix}add`;
@@ -25,10 +24,10 @@ exports.run = async (client, msg) => {
 
     return msg.guild.voiceConnection.playStream(yt(song.url, { audioonly: true }), { passes: 2 })
       .on("end", () => {
-        wait(100).then(() => {
+        setTimeout(() => {
           handler.songs.shift();
           play(handler.songs[0]);
-        });
+        }, 100);
       })
       .on("error", err => msg.channel.send(`error: ${err}`).then(() => {
         handler.songs.shift();
