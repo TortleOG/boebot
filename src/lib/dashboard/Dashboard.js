@@ -42,7 +42,7 @@ class Dashboard {
      * The port for the web server.
      * @type {number}
      */
-    this.port = process.env.PORT || 80;
+    this.port = process.env.PORT || 8000;
 
     /**
      * The location of public files.
