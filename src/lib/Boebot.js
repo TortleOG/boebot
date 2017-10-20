@@ -1,9 +1,12 @@
+/* eslint-disable no-underscore-dangle */
+
 const { Client } = require("komada");
 const { join, sep } = require("path");
 const settings = !process.env.PRODUCTION ? require("../../settings") : null;
 
 const Currency = require("./structures/Currency");
 const NYTimes = require("./structures/NYTimes");
+const Dashboard = require("./dashboard/Dashboard");
 
 /**
  * @typedef  {object}   OptionsDisabled
@@ -66,13 +69,24 @@ class BoeBot extends Client {
      */
     this.NYTimes = new NYTimes(settings ? settings.NYT.key : process.env.NYT_API_KEY);
 
-    this.Currency = new Currency(this);
+    /**
+     * A wrapper for Currency commands.
+     * @type {Class}
+     */
+    this.Currency = null;
 
     /**
      * The location of all dashboard related files
      * @type {string}
      */
     this.dashboardDir = join(this.clientBaseDir, `../public${sep}`);
+
+    this.once("ready", this._rdy.bind(this));
+  }
+
+  _rdy() {
+    this.Currency = new Currency(this);
+    new Dashboard(this).start();
   }
 }
 
