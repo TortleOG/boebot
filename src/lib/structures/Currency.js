@@ -29,8 +29,9 @@ class Currency {
    * Creates the table.
    * @param {string} name The name for the table.
    */
-  async createTable(name) {
-    await this.provider.createTable(name, this.sql);
+  async init(name) {
+    if (!this.client.providers.has("sqlite")) throw new Error("The Provider 'sqlite' was not found. Please download one from the repo.");
+    if (!(await this.provider.hasTable("currency"))) await this.provider.createTable(name, this.sql);
   }
 
   /**
