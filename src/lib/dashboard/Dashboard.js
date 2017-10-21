@@ -61,6 +61,8 @@ class Dashboard {
      * @type {external:Discord.Collection}
      */
     this.users = new this.client.methods.Collection();
+
+    this.init();
   }
 
   /**
@@ -90,9 +92,9 @@ class Dashboard {
   }
 
   /**
-   * Starts the web server.
+   * Inits all express dependencies.
    */
-  start() {
+  init() {
     passport.serializeUser((user, done) => {
       done(null, user);
     });
@@ -101,7 +103,7 @@ class Dashboard {
     });
 
     passport.use(new Strategy({
-      clientID: this.client.user.id,
+      clientID: settings ? settings.dash.clientID : this.client.user.id,
       clientSecret: settings ? settings.dash.oauthSecret : process.env.DASH_OAUTH_SECRET,
       callbackURL: settings ? settings.dash.callback : process.env.DASH_CALLBACK_URL,
       scope: ["identify", "guilds"],
@@ -137,7 +139,12 @@ class Dashboard {
     app.use(express.static(this.dataDir));
     // Docs page
     app.use("/docs", express.static(join(this.client.clientBaseDir, "../docs")));
+  }
 
+  /**
+   * Starts the web server.
+   */
+  start() {
     // Home page
     app.get("/", (req, res) => res.render(`${this.dataDir}index.ejs`, {
       client: this.client,
