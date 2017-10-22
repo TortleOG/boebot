@@ -19,6 +19,10 @@ const session = require("express-session");
 const { Strategy } = require("passport-discord");
 const helmet = require("helmet");
 
+// Routes
+const home = require("./routes/home");
+const guilds = require("./routes/guilds");
+
 // Other stuff
 const DashboardUser = require("./DashboardUser");
 
@@ -146,11 +150,7 @@ class Dashboard {
    */
   start() {
     // Home page
-    app.get("/", (req, res) => res.render(`${this.dataDir}index.ejs`, {
-      client: this.client,
-      user: req.isAuthenticated() ? this.users.get(req.user) : null,
-      auth: req.isAuthenticated(),
-    }));
+    app.use(home(this, { app, passport }));
 
     // Commands page
     app.get("/commands", (req, res) => res.render(`${this.dataDir}commands.ejs`, {
@@ -158,31 +158,6 @@ class Dashboard {
       user: req.isAuthenticated() ? this.users.get(req.user) : null,
       auth: req.isAuthenticated(),
     }));
-
-    // Login
-    app.get("/login", (req, res, next) => {
-      if (req.session.backURL) {
-        req.session.backURL = req.session.backURL;
-      } else if (req.headers.referer) {
-        const parsed = url.parse(req.headers.referer);
-        if (parsed.hostname === app.locals.domain) {
-          req.session.backURL = parsed.path;
-        }
-      } else {
-        req.session.backURL = "/";
-      }
-      next();
-    }, passport.authenticate("discord"));
-
-    // Callback
-    app.get("/callback", passport.authenticate("discord", { failureRedirect: "/autherror" }), (req, res) => {
-      if (req.session.backURL) {
-        res.redirect(req.session.backURL);
-        req.session.backURL = null;
-      } else {
-        res.redirect("/");
-      }
-    });
 
     // Admin page
     app.get("/admin", this.checkAdmin, (req, res) => res.render(`${this.dataDir}admin.ejs`, {
@@ -199,21 +174,9 @@ class Dashboard {
     }));
 
     // Guild page
-    app.get("/guilds/:id", this.checkAuth, (req, res) => {
-      const guild = this.client.guilds.get(req.params.id);
-      return res.render(`${this.dataDir}guilds.ejs`, {
-        client: this.client,
-        user: req.isAuthenticated() ? this.users.get(req.user) : null,
-        auth: req.isAuthenticated(),
-        guild,
-      });
-    });
+    app.use("/guilds", guilds(this, this.checkAuth));
 
     // Logout
-    app.get("/logout", (req, res) => {
-      req.logout();
-      res.redirect("/");
-    });
 
     // 404 Page
     app.use((req, res) => res.status(404).render(`${this.dataDir}404.ejs`, {
