@@ -40,16 +40,29 @@ class BoeBot extends Client {
     this.once("ready", this._rdy.bind(this));
   }
 
+  /**
+   * Boebot's custom ready method.
+   * @private
+   */
   _rdy() {
     this.Currency = new Currency(this);
     new Dashboard(this).start();
   }
 
+  /**
+   * Logs the client in.
+   * @param {string} token A Discord appilcation token.
+   * @return {void}
+   */
   async login(token) {
     await this.initSettings();
     return super.login(token);
   }
 
+  /**
+   * Initializes all required settings.
+   * @return {void}
+   */
   async initSettings() {
     if (!this.ready) return setTimeout(() => this.initSettings(), 1000);
     if (!this.settings.guilds.schema.modLog) await this.settings.guilds.add("modLog", { type: "textChannel" });
