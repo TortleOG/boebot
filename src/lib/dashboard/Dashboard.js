@@ -175,8 +175,6 @@ class Dashboard {
     // Guild page
     app.use("/guilds", guilds(this, this.checkAuth));
 
-    // Logout
-
     // 404 Page
     app.use((req, res) => res.status(404).render(`${this.dataDir}404.ejs`, {
       page: `${req.hostname}${req.originalUrl}`,
@@ -184,11 +182,8 @@ class Dashboard {
       auth: req.isAuthenticated(),
     }));
 
-    // Set port to 80
-    app.set("port", this.port);
-
     // Listen on port 80
-    app.listen(app.get("port"), () => this.client.emit("log", `Dashboard started. Listening on port ${app.get("port")}.`, "log"));
+    app.listen(this.port, () => this.client.emit("log", `Dashboard started. Listening on port ${this.port}.`, "log"));
   }
 }
 
