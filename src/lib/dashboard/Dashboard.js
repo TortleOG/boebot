@@ -1,7 +1,6 @@
 /* eslint-disable class-methods-use-this */
 
 // Node stuff
-const url = require("url");
 const { join, sep } = require("path");
 
 // Settings
