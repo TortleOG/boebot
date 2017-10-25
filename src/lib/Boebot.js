@@ -44,6 +44,17 @@ class BoeBot extends Client {
     this.Currency = new Currency(this);
     new Dashboard(this).start();
   }
+
+  async login(token) {
+    await this.initSettings();
+    return super.login(token);
+  }
+
+  async initSettings() {
+    if (!this.ready) return setTimeout(() => this.initSettings(), 1000);
+    if (!this.settings.guilds.schema.modLog) await this.settings.guilds.add("modLog", { type: "textChannel" });
+    if (!this.settings.guilds.schema.muteRole) await this.settings.guilds.add("muteRole", { type: "role" });
+  }
 }
 
 module.exports = BoeBot;
