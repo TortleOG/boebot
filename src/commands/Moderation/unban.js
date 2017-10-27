@@ -1,12 +1,25 @@
-exports.run = async (client, msg, [member, ...reason]) => {
-  if (reason.length === 0) reason = await msg.prompt("**Reason?**");
-  if (reason === null) return msg.send("`❌` | No response found. Aborting...");
-  member.unbanReason = reason.join(" ");
-  member.unbanAuth = msg.member;
-  msg.guild.unban(member).then(() => msg.send("`✅` User successfully unbanned.")).catch((err) => {
-    msg.send(`\`❌\` | It seems an error has occured. This shouldn't have happended. Please contact the bot owner.\n\`\`\`${err}\`\`\``);
-    throw err;
-  });
+const Modlog = require("../../lib/structures/Modlog");
+
+exports.run = async (client, msg, [user, ...reason]) => {
+  reason = reason.length === 0 ? await msg.prompt("**Reason?**") : reason.join(" ");
+
+  const bans = await msg.guild.fetchBans();
+  if (!bans.has(user.id)) throw `\`|❌|\` ${msg.author}, this user is not banned.`;
+
+  if (reason === null) throw "`|❌|` No response found. Aborting...";
+
+  await msg.guild.unban(user, reason);
+
+  if (msg.guild.settings.modLog) {
+    new Modlog(msg.guild)
+      .setType("unban")
+      .setUser(user)
+      .setMod(msg.author)
+      .setReason(reason)
+      .send();
+  }
+
+  return msg.send(`\`|✅|\` **${user.tag}** successfully unbanned by **${msg.author.tag}** for:\n**${reason}**.`);
 };
 
 exports.conf = {
@@ -22,7 +35,7 @@ exports.conf = {
 exports.help = {
   name: "unban",
   description: "Unbans members from the guild.",
-  usage: "<member:user> [reason:str] [...]",
+  usage: "<user:user> [reason:str] [...]",
   usageDelim: " ",
   extendedHelp: "",
 };

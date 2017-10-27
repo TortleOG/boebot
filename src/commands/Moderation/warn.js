@@ -1,18 +1,23 @@
 const Modlog = require("../../lib/structures/Modlog");
 
 exports.run = async (client, msg, [member, ...reason]) => {
-  if (member.user.bot) return msg.send("`❌` | I cannot warn other bots.");
+  if (member.user.bot) throw "`|❌|` I cannot warn other bots.";
 
-  if (reason.length === 0) reason = await msg.prompt("**Reason?**");
-  if (reason === null) return msg.send("`❌` | No response found. Aborting...");
+  if (member.highestRole.position >= msg.member.highestRole.position) throw `\`|❌|\` ${msg.author}, I cannot execute moderation commands on this member.`;
 
-  new Modlog(client)
-    .setType("warn")
-    .setMember(member)
-    .setMod(msg.member)
-    .setReason(Array.isArray(reason) ? reason.join(" ") : reason)
-    .send(msg);
-  return msg.send("`✅` User successfully warned.");
+  reason = reason.length === 0 ? await msg.prompt("**Reason?**") : reason.join(" ");
+  if (reason === null) throw "`|❌|` No response found. Aborting...";
+
+  if (msg.guild.settings.modLog) {
+    new Modlog(msg.guild)
+      .setType("warn")
+      .setUser(member.user)
+      .setMod(msg.author)
+      .setReason(reason)
+      .send();
+  }
+
+  return msg.send(`\`|⚠|\` **${member.user.tag}** successfully warned by **${msg.author.tag}** for:\n**${reason}**.`);
 };
 
 exports.conf = {

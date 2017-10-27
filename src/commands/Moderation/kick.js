@@ -1,25 +1,27 @@
 const Modlog = require("../../lib/structures/Modlog");
 
 exports.run = async (client, msg, [member, ...reason]) => {
-  if (member.user.bot) return msg.send("`❌` | I cannot kick other bots.");
-  if (!member.kickable) return msg.send("`❌` | I cannot kick this member.");
+  if (member.user.bot) throw "`|❌|` I cannot kick other bots.";
 
-  const modRole = msg.guild.roles.get(msg.guild.settings.modRole);
-  const adminRole = msg.guild.roles.get(msg.guild.settings.adminRole);
-  if (!modRole || !adminRole) return msg.send("`❌` | No mod/admin role found.");
-  if (member.roles.has(modRole.id) || member.roles.has(adminRole.id)) return msg.send("`❌` | I cannot kick other mods/admins.");
+  if (!member.kickable) throw `\`|❌|\` ${msg.author}, I cannot kick this member.`;
 
-  if (reason.length === 0) reason = await msg.prompt("**Reason?**");
-  if (reason === null) return msg.send("`❌` | No response found. Aborting...");
+  if (member.highestRole.position >= msg.member.highestRole.position) throw `\`|❌|\` ${msg.author}, I cannot execute moderation commands on this member.`;
 
-  await member.kick().catch(err => msg.send(`\`❌\` | It seems an error has occured. This shouldn't have happended. Please contact the bot owner.\n\`\`\`${err}\`\`\``));
-  new Modlog(client)
-    .setType("kick")
-    .setMember(member)
-    .setMod(msg.member)
-    .setReason(Array.isArray(reason) ? reason.join(" ") : reason)
-    .send(msg);
-  return msg.send("`✅` User successfully kick.");
+  reason = reason.length === 0 ? await msg.prompt("**Reason?**") : reason.join(" ");
+  if (reason === null) throw "`|❌|` No response found. Aborting...";
+
+  await member.kick(reason);
+
+  if (msg.guild.settings.modLog) {
+    new Modlog(msg.guild)
+      .setType("kick")
+      .setMember(member.user)
+      .setMod(msg.author)
+      .setReason(reason)
+      .send();
+  }
+
+  return msg.send(`\`|🛑|\` **${member.user.tag}** successfully kicked by **${msg.author.tag}** for:\n**${reason}**.`);
 };
 
 exports.conf = {
