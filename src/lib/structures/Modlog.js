@@ -8,6 +8,7 @@ module.exports = class ModLog {
     this.user = null;
     this.mod = null;
     this.reason = null;
+    this.case = null;
   }
 
   setType(type) {
@@ -36,10 +37,10 @@ module.exports = class ModLog {
     return this;
   }
 
-  send() {
+  async send() {
     const modLog = this.guild.channels.get(this.guild.settings.modLog);
     if (!modLog) throw "Did not find a mod-log channel.";
-
+    this.case = await this.getCase();
     return modLog.send({ embed: this.embed });
   }
 
@@ -67,6 +68,15 @@ module.exports = class ModLog {
     }
   }
 
+  async getCase() {
+    const row = await this.provider.get("modlogs", this.guild.id);
+    console.log(row);
+    if (!row) return this.provider.create("modlogs", this.guild.id, { modlogs: [this.pack] }).then(() => 0);
+    row.modlogs.push(this.pack);
+    await this.provider.replace("modlogs", this.guild.id, row);
+    return row.modlogs.length;
+  }
+
   get embed() {
     const embed = new this.client.methods.Embed()
       .setTitle(`User ${ModLog.title(this.type)}`)
@@ -77,7 +87,21 @@ module.exports = class ModLog {
         `**Reason**: ${this.reason}`,
       ].join("\n"))
       .setTimestamp()
-      .setFooter(this.type.capitalize(), this.client.user.displayAvatarURL({ format: "jpg" }));
+      .setFooter(`Case ${this.case}`, this.client.user.displayAvatarURL({ format: "jpg" }));
     return embed;
+  }
+
+  get pack() {
+    return {
+      type: this.type,
+      user: this.user,
+      mod: this.mod,
+      reason: this.reason,
+      case: this.case,
+    };
+  }
+
+  get provider() {
+    return this.client.providers.get("rethinkdb");
   }
 };
