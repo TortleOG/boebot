@@ -5,7 +5,7 @@ const BoeBot = require("./lib/Boebot");
 const client = new BoeBot(settings ? settings.clientConfig : {
   ownerID: "157246404388061184",
   prefix: "?",
-  provider: { engine: "sqlite" },
+  provider: { engine: "rethinkdb" },
   clientOptions: {
     fetchAllMembers: true,
   },

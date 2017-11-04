@@ -33,9 +33,9 @@
     "passport": "^0.4.0",
     "passport-discord": "^0.1.2",
     "performance-now": "^2.1.0",
+    "rethinkdbdash": "^2.3.31",
     "sax": "^1.2.4",
     "snekfetch": "^3.4.4",
-    "sqlite": "^2.8.0",
     "ytdl-core": "^0.18.0"
   },
   "devDependencies": {
