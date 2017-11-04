@@ -9,7 +9,6 @@ exports.run = async (client, msg, [member, ...reason]) => {
   if (!muteRole) throw "`|❌|` No mute role found.";
 
   reason = reason.length === 0 ? await msg.prompt("**Reason?**") : reason.join(" ");
-  if (reason === null) throw "`|❌|` No response found. Aborting...";
 
   if (!member.roles.has(muteRole.id)) throw `\`|❌|\` ${msg.author}, this user isn't muted.`;
 
@@ -20,7 +19,7 @@ exports.run = async (client, msg, [member, ...reason]) => {
       .setType("unmute")
       .setMember(member.user)
       .setMod(msg.author)
-      .setReason(reason)
+      .setReason(reason || `No reason specified. Write '${msg.guild.settings.prefix}reason <case#>' to claim this log.`)
       .send();
   }
 

@@ -6,8 +6,6 @@ exports.run = async (client, msg, [user, ...reason]) => {
   const bans = await msg.guild.fetchBans();
   if (!bans.has(user.id)) throw `\`|❌|\` ${msg.author}, this user is not banned.`;
 
-  if (reason === null) throw "`|❌|` No response found. Aborting...";
-
   await msg.guild.unban(user, reason);
 
   if (msg.guild.settings.modLog) {
@@ -15,7 +13,7 @@ exports.run = async (client, msg, [user, ...reason]) => {
       .setType("unban")
       .setUser(user)
       .setMod(msg.author)
-      .setReason(reason)
+      .setReason(reason || `No reason specified. Write '${msg.guild.settings.prefix}reason <case#>' to claim this log.`)
       .send();
   }
 

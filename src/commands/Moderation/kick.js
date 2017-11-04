@@ -17,7 +17,7 @@ exports.run = async (client, msg, [member, ...reason]) => {
       .setType("kick")
       .setMember(member.user)
       .setMod(msg.author)
-      .setReason(reason)
+      .setReason(reason || `No reason specified. Write '${msg.guild.settings.prefix}reason <case#>' to claim this log.`)
       .send();
   }
 

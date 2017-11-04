@@ -8,7 +8,6 @@ exports.run = async (client, msg, [member, ...reason]) => {
   if (member.highestRole.position >= msg.member.highestRole.position) throw `\`|❌|\` ${msg.author}, I cannot execute moderation commands on this member.`;
 
   reason = reason.length === 0 ? await msg.prompt("**Reason?**") : reason.join(" ");
-  if (reason === null) throw "`|❌|` No response found. Aborting...";
 
   await msg.guild.ban(member.user, { reason });
 
@@ -17,7 +16,7 @@ exports.run = async (client, msg, [member, ...reason]) => {
       .setType("ban")
       .setMember(member.user)
       .setMod(msg.author)
-      .setReason(reason)
+      .setReason(reason || `No reason specified. Write '${msg.guild.settings.prefix}reason <case#>' to claim this log.`)
       .send();
   }
 
