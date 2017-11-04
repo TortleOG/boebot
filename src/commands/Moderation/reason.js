@@ -46,7 +46,11 @@ exports.run = async (client, msg, [selected, ...reason]) => {
   ].join("\n")}${"```"}`);
 };
 
-exports.init = (client) => { this.provider = client.providers.get("rethinkdb"); };
+exports.init = (client) => {
+  this.provider = client.providers.get("rethinkdb");
+  if (!this.provider.hasTable("modlogs")) this.provider.createTable("modlogs");
+};
+
 
 exports.conf = {
   enabled: true,
