@@ -1,11 +1,10 @@
-exports.providerEngine = "sqlite";
+exports.providerEngine = "rethinkdb";
 
 exports.init = async (client) => {
   if (client.providers.has(this.providerEngine)) this.provider = client.providers.get(this.providerEngine);
   else throw new Error(`The Provider ${this.providerEngine} does not seem to exist.`);
   if (!(await this.provider.hasTable("tags"))) {
-    const SQLCreate = ["count INTEGER NOT NULL DEFAULT 0", "id TEXT NOT NULL UNIQUE", "contents TEXT NOT NULL"];
-    await this.provider.createTable("tags", SQLCreate);
+    await this.provider.createTable("tags");
   }
 };
 

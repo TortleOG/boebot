@@ -19,8 +19,6 @@ exports.run = async (client, msg, [action, user, amount = 0]) => {
   }
 };
 
-exports.init = async client => client.Currency.init(client.Currency.table);
-
 exports.conf = {
   enabled: true,
   runIn: ["text"],
