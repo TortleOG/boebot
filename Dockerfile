@@ -20,8 +20,11 @@ RUN apk add --update \
 # Add project src
 COPY . .
 
-# Expose port
+# Expose ports
 EXPOSE 3000
+EXPOSE 8080
+EXPOSE 28015
+EXPOSE 29015
 
 # Enviroment vars
 ENV PRODUCTION= \

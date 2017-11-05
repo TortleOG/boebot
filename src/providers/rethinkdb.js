@@ -4,7 +4,7 @@ const config = {
   requiredModules: ["rethinkdbdash"],
 };
 
-const r = require("rethinkdbdash")({ db: "test" });
+const r = require("rethinkdbdash")({ db: "test", servers: [{ host: "172.18.0.2", port: 28015 }] });
 
 exports.exec = r;
 
