@@ -15,7 +15,7 @@ exports.run = async (client, msg, [member, ...reason]) => {
   if (msg.guild.settings.modLog) {
     new Modlog(msg.guild)
       .setType("kick")
-      .setMember(member.user)
+      .setUser(member.user)
       .setMod(msg.author)
       .setReason(reason || `No reason specified. Write '${msg.guild.settings.prefix}reason <case#>' to claim this log.`)
       .send();
