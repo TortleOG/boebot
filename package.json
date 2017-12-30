@@ -28,7 +28,7 @@
     "helmet": "^3.8.2",
     "komada": "^0.21.1",
     "moment": "^2.18.1",
-    "moment-duration-format": "^1.3.0",
+    "moment-duration-format": "^2.0.0",
     "node-opus": "^0.2.7",
     "passport": "^0.4.0",
     "passport-discord": "^0.1.2",
